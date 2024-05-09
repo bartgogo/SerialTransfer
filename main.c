@@ -19,7 +19,37 @@ int main() {
         return 1;
     }
 
-    // 发送文件到 Linux 开发板
+    // 发送文件名和文件字节数到 Linux 开发板
+    FILE *file = fopen(FILENAME, "rb");
+    if (file == NULL) {
+        printf("Failed to open file '%s'.\n", FILENAME);
+        ClosePort(com_port);
+        return 1;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long file_size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    ret = SendData(com_port, FILENAME, strlen(FILENAME));
+    if (ret != strlen(FILENAME)) {
+        printf("Failed to send file name.\n");
+        ClosePort(com_port);
+        fclose(file);
+        return 1;
+    }
+
+    char size_buffer[20];
+    snprintf(size_buffer, sizeof(size_buffer), "%ld", file_size);
+    ret = SendData(com_port, size_buffer, strlen(size_buffer));
+    if (ret != strlen(size_buffer)) {
+        printf("Failed to send file size.\n");
+        ClosePort(com_port);
+        fclose(file);
+        return 1;
+    }
+
+    // 发送文件内容到 Linux 开发板
     ret = sendFileToLinux(FILENAME, com_port);
     if (ret != 0) {
         printf("Failed to send file to Linux board.\n");
@@ -27,8 +57,9 @@ int main() {
         printf("File sent successfully.\n");
     }
 
-    // 关闭串口
+    // 关闭串口和文件
     ClosePort(com_port);
+    fclose(file);
 
     return 0;
 }
@@ -64,50 +95,3 @@ int sendFileToLinux(const char *filename, PORT com_port) {
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-#include <stdio.h>
-#include "serial.h"
-#include <windows.h>
-
-int serial_test()
-{
-    PORT COM1;
-    char buff[1024] = {0};
-    int rcv_len = 0;
-
-    printf("open com1\n");
-    COM1 = serial_init(1, 115200, 8, 1, 0);
-
-    while(1)
-    {
-        Serial_SendData(COM1, "hello world\n", 13);
-        memset(buff, 0, 1024);
-        rcv_len = Serial_ReciveData(COM1, buff, 1024);
-        printf("rcv:%s\n", buff);
-        Sleep(1);
-    }
-}
-int main()
-{
-    serial_test();
-    while (1)
-    {
-    }
-
-    return 0;
-}
-*/
