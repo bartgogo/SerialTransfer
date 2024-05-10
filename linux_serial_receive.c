@@ -4,10 +4,53 @@
 #include <termios.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #define BUF_SIZE 1024 // 缓冲区大小
 
-int main() {
+// 函数声明
+int receiveFileFromPC();
+int sendFileToPC(const char *filename);
+
+int main(int argc, char *argv[]) {
+    // 检查参数数量
+    if (argc != 2) {
+        printf("Usage: %s <send | receive>\n", argv[0]);
+        return 1;
+    }
+
+    // 根据参数选择接收程序或发送程序
+    if (strcmp(argv[1], "send") == 0) {
+        // 发送程序
+        char filename[256];
+        printf("Enter the file name to send: ");
+        scanf("%s", filename);
+        int result = sendFileToPC(filename);
+        if (result != 0) {
+            printf("Error sending file to PC.\n");
+            return 1;
+        } else {
+            printf("File sent successfully.\n");
+        }
+    } else if (strcmp(argv[1], "receive") == 0) {
+        // 接收程序
+        int result = receiveFileFromPC();
+        if (result != 0) {
+            printf("Error receiving file from PC.\n");
+            return 1;
+        } else {
+            printf("File received successfully.\n");
+        }
+    } else {
+        printf("Invalid option: %s\n", argv[1]);
+        return 1;
+    }
+
+    return 0;
+}
+
+// 函数定义：接收文件从 PC
+int receiveFileFromPC() {
     int serial_port;
     FILE *file;
     char filename[256];
@@ -62,6 +105,72 @@ int main() {
         }
         fwrite(buffer, 1, bytes_read, file);
         bytes_written += bytes_read;
+    }
+
+    // 关闭文件和串口
+    fclose(file);
+    close(serial_port);
+
+    return 0;
+}
+
+// 函数定义：发送文件到 PC
+int sendFileToPC(const char *filename) {
+    int serial_port;
+    FILE *file;
+    char buffer[BUF_SIZE];
+    ssize_t bytes_read;
+    long file_size;
+    int bytes_sent;
+
+    // 打开串口
+    serial_port = open("/dev/ttyS0", O_RDWR);
+    if (serial_port < 0) {
+        perror("Error opening serial port");
+        return 1;
+    }
+
+    // 打开文件
+    file = fopen(filename, "rb");
+    if (file == NULL) {
+        perror("Error opening file");
+        close(serial_port);
+        return 1;
+    }
+
+    // 获取文件大小
+    fseek(file, 0, SEEK_END);
+    file_size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    // 发送文件名和文件大小到 PC
+    bytes_sent = write(serial_port, filename, strlen(filename));
+    if (bytes_sent <= 0) {
+        perror("Error sending filename");
+        fclose(file);
+        close(serial_port);
+        return 1;
+    }
+
+    char size_buffer[20];
+    snprintf(size_buffer, sizeof(size_buffer), "%ld", file_size);
+    bytes_sent = write(serial_port, size_buffer, strlen(size_buffer));
+    if (bytes_sent <= 0) {
+        perror("Error sending file size");
+        fclose(file);
+        close(serial_port);
+        return 1;
+    }
+
+    // 发送文件内容到 PC
+    while ((bytes_read = fread(buffer, 1, sizeof(buffer), file)) > 0) {
+        bytes_sent = write(serial_port, buffer, bytes_read);
+        if (bytes_sent <= 0) {
+            perror("Error sending file content");
+            fclose(file);
+            close(serial_port);
+            return 1;
+        }
     }
 
     // 关闭文件和串口
