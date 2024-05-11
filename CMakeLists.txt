@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.27)
 project(SerialTransfer)
 
-set(CMAKE_C_STANDARD 17)
+set(CMAKE_C_STANDARD 11)
 if(WIN32)
     # Windows-specific settings
     add_executable(SerialTransfer main.c
