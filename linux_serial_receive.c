@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
+#include <sys/select.h>
 #define BUF_SIZE 1024 // 缓冲区大小
 
 // 函数声明
@@ -50,6 +50,7 @@ int main(int argc, char *argv[]) {
 }
 
 // 函数定义：接收文件从 PC
+// 函数定义：接收文件从 PC
 int receiveFileFromPC() {
     int serial_port;
     FILE *file;
@@ -59,6 +60,8 @@ int receiveFileFromPC() {
     ssize_t bytes_read;
     long file_size;
     long bytes_written = 0;
+    fd_set read_fds;
+    struct timeval timeout;
 
     // 打开串口
     serial_port = open("/dev/ttySAC2", O_RDWR);
@@ -67,20 +70,36 @@ int receiveFileFromPC() {
         return 1;
     }
 
+    // 使用 select 监视串口是否可读
+    FD_ZERO(&read_fds);
+    FD_SET(serial_port, &read_fds);
+
     // 读取文件名
     memset(filename, 0, sizeof(filename));
-    bytes_read = read(serial_port, filename, sizeof(filename) - 1);
-    if (bytes_read <= 0) {
-        perror("Error reading filename");
+    if (select(serial_port + 1, &read_fds, NULL, NULL, NULL) > 0) {
+        bytes_read = read(serial_port, filename, sizeof(filename) - 1);
+        if (bytes_read <= 0) {
+            perror("Error reading filename");
+            close(serial_port);
+            return 1;
+        }
+    } else {
+        perror("Error or timeout waiting for filename");
         close(serial_port);
         return 1;
     }
 
     // 读取文件大小
     memset(size_buffer, 0, sizeof(size_buffer));
-    bytes_read = read(serial_port, size_buffer, sizeof(size_buffer) - 1);
-    if (bytes_read <= 0) {
-        perror("Error reading file size");
+    if (select(serial_port + 1, &read_fds, NULL, NULL, NULL) > 0) {
+        bytes_read = read(serial_port, size_buffer, sizeof(size_buffer) - 1);
+        if (bytes_read <= 0) {
+            perror("Error reading file size");
+            close(serial_port);
+            return 1;
+        }
+    } else {
+        perror("Error or timeout waiting for file size");
         close(serial_port);
         return 1;
     }
@@ -94,17 +113,27 @@ int receiveFileFromPC() {
         return 1;
     }
 
-    // 读取文件内容并写入文件
+    // 使用 select 监视串口是否可读，读取文件内容并写入文件
     while (bytes_written < file_size) {
-        bytes_read = read(serial_port, buffer, sizeof(buffer));
-        if (bytes_read <= 0) {
-            perror("Error reading from serial port");
+        FD_ZERO(&read_fds);
+        FD_SET(serial_port, &read_fds);
+
+        if (select(serial_port + 1, &read_fds, NULL, NULL, NULL) > 0) {
+            bytes_read = read(serial_port, buffer, sizeof(buffer));
+            if (bytes_read <= 0) {
+                perror("Error reading from serial port");
+                fclose(file);
+                close(serial_port);
+                return 1;
+            }
+            fwrite(buffer, 1, bytes_read, file);
+            bytes_written += bytes_read;
+        } else {
+            perror("Error or timeout waiting for file content");
             fclose(file);
             close(serial_port);
             return 1;
         }
-        fwrite(buffer, 1, bytes_read, file);
-        bytes_written += bytes_read;
     }
 
     // 关闭文件和串口
@@ -113,6 +142,7 @@ int receiveFileFromPC() {
 
     return 0;
 }
+
 
 // 函数定义：发送文件到 PC
 int sendFileToPC(const char *filename) {
