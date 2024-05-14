@@ -61,7 +61,7 @@ int receiveFileFromPC() {
     long bytes_written = 0;
 
     // 打开串口
-    serial_port = open("/dev/ttyS0", O_RDWR);
+    serial_port = open("/dev/ttySAC2", O_RDWR);
     if (serial_port < 0) {
         perror("Error opening serial port");
         return 1;
@@ -124,7 +124,7 @@ int sendFileToPC(const char *filename) {
     int bytes_sent;
 
     // 打开串口
-    serial_port = open("/dev/ttyS0", O_RDWR);
+    serial_port = open("/dev/ttySAC2", O_RDWR);
     if (serial_port < 0) {
         perror("Error opening serial port");
         return 1;
