@@ -1,0 +1,1 @@
+/usr/bin/arm-linux-gnueabi-gcc -rdynamic CMakeFiles/SerialTransfer.dir/linux_serial_receive.c.o -o SerialTransfer 
