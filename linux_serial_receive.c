@@ -6,18 +6,21 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <sys/select.h>
+
 #define BUF_SIZE 1024 // 缓冲区大小
 
 // 函数声明
-int receiveFileFromPC();
-int sendFileToPC(const char *filename);
+int receiveFileFromPC(const char *serial_path);
+int sendFileToPC(const char *filename, const char *serial_path);
 
 int main(int argc, char *argv[]) {
     // 检查参数数量
-    if (argc != 2) {
-        printf("Usage: %s <send | receive>\n", argv[0]);
+    if (argc != 3) {
+        printf("Usage: %s <send | receive> <serial_port_path>\n", argv[0]);
         return 1;
     }
+
+    char *serial_port_path = argv[2];
 
     // 根据参数选择接收程序或发送程序
     if (strcmp(argv[1], "send") == 0) {
@@ -25,7 +28,7 @@ int main(int argc, char *argv[]) {
         char filename[256];
         printf("Enter the file name to send: ");
         scanf("%s", filename);
-        int result = sendFileToPC(filename);
+        int result = sendFileToPC(filename, serial_port_path);
         if (result != 0) {
             printf("Error sending file to PC.\n");
             return 1;
@@ -34,7 +37,7 @@ int main(int argc, char *argv[]) {
         }
     } else if (strcmp(argv[1], "receive") == 0) {
         // 接收程序
-        int result = receiveFileFromPC();
+        int result = receiveFileFromPC(serial_port_path);
         if (result != 0) {
             printf("Error receiving file from PC.\n");
             return 1;
@@ -50,8 +53,7 @@ int main(int argc, char *argv[]) {
 }
 
 // 函数定义：接收文件从 PC
-// 函数定义：接收文件从 PC
-int receiveFileFromPC() {
+int receiveFileFromPC(const char *serial_path) {
     int serial_port;
     FILE *file;
     char filename[256];
@@ -64,7 +66,7 @@ int receiveFileFromPC() {
     struct timeval timeout;
 
     // 打开串口
-    serial_port = open("/dev/ttySAC2", O_RDWR);
+    serial_port = open(serial_path, O_RDWR);
     if (serial_port < 0) {
         perror("Error opening serial port");
         return 1;
@@ -143,9 +145,8 @@ int receiveFileFromPC() {
     return 0;
 }
 
-
 // 函数定义：发送文件到 PC
-int sendFileToPC(const char *filename) {
+int sendFileToPC(const char *filename, const char *serial_path) {
     int serial_port;
     FILE *file;
     char buffer[BUF_SIZE];
@@ -154,7 +155,7 @@ int sendFileToPC(const char *filename) {
     int bytes_sent;
 
     // 打开串口
-    serial_port = open("/dev/ttySAC2", O_RDWR);
+    serial_port = open(serial_path, O_RDWR);
     if (serial_port < 0) {
         perror("Error opening serial port");
         return 1;
