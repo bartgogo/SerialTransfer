@@ -145,7 +145,7 @@ int sendFileToLinux(const char *filename, PORT com_port) {
     fseek(file, 0, SEEK_SET);
 	long b_sent = 0;
     // 发送文件大小到 Linux 开发板
-    char size_buffer[32];
+    char size_buffer[20];
     snprintf(size_buffer, sizeof(size_buffer), "%ld", file_size);
     bytes_sent = SendData(com_port, size_buffer, strlen(size_buffer));
     if (bytes_sent <= 0) {
