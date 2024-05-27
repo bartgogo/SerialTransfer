@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <termios.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <sys/select.h>
 
 #define BUF_SIZE 1024 // 缓冲区大小
@@ -155,7 +153,7 @@ int sendFileToPC(const char *filename, const char *serial_path) {
     int bytes_sent;
 
     // 打开串口
-    serial_port = open(serial_path, O_RDWR);
+    serial_port = open(serial_path, O_RDWR|O_NOCTTY);
     if (serial_port < 0) {
         perror("Error opening serial port");
         return 1;

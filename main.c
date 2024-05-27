@@ -4,7 +4,7 @@
 #include "serial.h"
 
 #define FILENAME "example.txt" // 默认要发送的文件名
-
+int com=1;
 // 函数声明
 int receiveFileFromLinux(const char *outputFilename, PORT com_port);
 int sendFileToLinux(const char *filename, PORT com_port);
@@ -22,7 +22,9 @@ int main(int argc, char *argv[]) {
         char filename[256];
         printf("Enter the file name to send: ");
         scanf("%s", filename);
-        PORT com_port = serial_init(1, 115200, 8, ONESTOPBIT, NOPARITY);
+        printf("Enter the com port radix");
+        scanf("%d",&com);
+        PORT com_port = serial_init(com, 115200, 8, ONESTOPBIT, NOPARITY);
         if (com_port == NULL) {
             printf("Failed to open serial port.\n");
             return 1;
@@ -36,7 +38,9 @@ int main(int argc, char *argv[]) {
         ClosePort(com_port);
     } else if (strcmp(argv[1], "receive") == 0) {
         // 接收程序
-        PORT com_port = serial_init(1, 115200, 8, ONESTOPBIT, NOPARITY);
+        printf("Enter the com port radix");
+        scanf("%d",&com);
+        PORT com_port = serial_init(com, 115200, 8, ONESTOPBIT, NOPARITY);
         if (com_port == NULL) {
             printf("Failed to open serial port.\n");
             return 1;
@@ -61,7 +65,7 @@ int main(int argc, char *argv[]) {
 // 函数定义：接收文件从 Linux 开发板
 int receiveFileFromLinux(const char *outputFilename, PORT com_port) {
     FILE *file;
-    char buffer[1024];
+    char buffer[200];
     size_t bytes_read;
     int bytes_written;
 
@@ -115,7 +119,7 @@ int receiveFileFromLinux(const char *outputFilename, PORT com_port) {
 // 函数定义：发送文件到 Linux 开发板
 int sendFileToLinux(const char *filename, PORT com_port) {
     FILE *file;
-    char buffer[1024];
+    char buffer[100];
     size_t bytes_read;
     int bytes_sent;
 
@@ -133,12 +137,12 @@ int sendFileToLinux(const char *filename, PORT com_port) {
         fclose(file);
         return 1;
     }
-
+	
     // 获取文件大小
     fseek(file, 0, SEEK_END);
     long file_size = ftell(file);
     fseek(file, 0, SEEK_SET);
-
+	long b_sent = 0;
     // 发送文件大小到 Linux 开发板
     char size_buffer[20];
     snprintf(size_buffer, sizeof(size_buffer), "%ld", file_size);
@@ -148,17 +152,26 @@ int sendFileToLinux(const char *filename, PORT com_port) {
         fclose(file);
         return 1;
     }
-
+	Sleep(50);
     // 发送文件内容到 Linux 开发板
-    while ((bytes_read = fread(buffer, 1, sizeof(buffer), file)) > 0) {
-        bytes_sent = SendData(com_port, buffer, bytes_read);
-        if (bytes_sent != bytes_read) {
-            printf("Failed to send file data.\n");
-            fclose(file);
-            return 1;
-        }
-    }
+	while (!feof(file)){
+		memset(buffer, 0, sizeof(buffer));
+		// buffer : 将文件读取到内存的位置
+		// sizeof(char) : 读取的基本单元字节长度
+		// sizeof(buffer) : 读取的基本单元个数,
+		//       读取字节个数是 sizeof(buffer) * sizeof(char)
+		// p : 文件指针
+		//fread(buffer, sizeof(char), sizeof(buffer), p);
+		if ((bytes_read = fread(buffer, 1, sizeof(buffer), file)) > 0)
+		{
+			bytes_sent = SendData(com_port, buffer, bytes_read);
+			b_sent += bytes_sent;
+		}
+		// 打印读取的内容
+	}
 
+
+	printf("send file size.%ld\n,real_size=%ld", b_sent, file_size);
     // 关闭文件
     fclose(file);
 

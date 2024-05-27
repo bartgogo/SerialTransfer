@@ -2,11 +2,58 @@
 <project version="4">
   <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
+      <paths name="vmware ubutnu24 (d0fa0bc1-8dbe-47eb-8695-01893fb056ae)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/tmp.Z9PVfxMjhd" local="$PROJECT_DIR$" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debugremotehost" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-releaseremotehost" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-release" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debugremotehost" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-release" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-releaseremotehost" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+      <paths name="华为上海服务器 (e6c6ad46-fac6-4b23-84a6-dacabec149b9)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/tmp.GXMByQdgq3" local="$PROJECT_DIR$" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debugremotehost" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-releaseremotehost" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-release" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debugremotehost" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-release" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-releaseremotehost" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
       <paths name="远程主机 (122a9f33-a657-444f-8d8f-4dcdeb93befe)">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
+        </serverdata>
+      </paths>
+      <paths name="香港服务器 (2d23eebb-3094-4d93-ad22-ab3d94257b93)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/tmp.yafBNdLx1j" local="$PROJECT_DIR$" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-releaseremotehost" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debugremotehost" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-release" />
+          </excludedPaths>
         </serverdata>
       </paths>
     </serverData>
