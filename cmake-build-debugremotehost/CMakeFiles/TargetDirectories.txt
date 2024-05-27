@@ -1,0 +1,3 @@
+/tmp/tmp.GXMByQdgq3/cmake-build-debugremotehost/CMakeFiles/SerialTransfer.dir
+/tmp/tmp.GXMByQdgq3/cmake-build-debugremotehost/CMakeFiles/edit_cache.dir
+/tmp/tmp.GXMByQdgq3/cmake-build-debugremotehost/CMakeFiles/rebuild_cache.dir
