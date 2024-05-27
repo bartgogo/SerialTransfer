@@ -6,7 +6,7 @@
 #define FILENAME "example.txt" // 默认要发送的文件名
 int com=1;
 // 函数声明
-int receiveFileFromLinux(const char *outputFilename, PORT com_port);
+int receiveFileFromLinux(PORT com_port);
 int sendFileToLinux(const char *filename, PORT com_port);
 
 int main(int argc, char *argv[]) {
@@ -38,14 +38,14 @@ int main(int argc, char *argv[]) {
         ClosePort(com_port);
     } else if (strcmp(argv[1], "receive") == 0) {
         // 接收程序
-        printf("Enter the com port radix");
+        printf("Enter the com port radix\n");
         scanf("%d",&com);
         PORT com_port = serial_init(com, 115200, 8, ONESTOPBIT, NOPARITY);
         if (com_port == NULL) {
             printf("Failed to open serial port.\n");
             return 1;
         }
-        int ret = receiveFileFromLinux("received_file.txt", com_port);
+        int ret = receiveFileFromLinux(com_port);
         if (ret != 0) {
             printf("Failed to receive file from Linux board.\n");
             ClosePort(com_port);
@@ -63,31 +63,31 @@ int main(int argc, char *argv[]) {
 }
 
 // 函数定义：接收文件从 Linux 开发板
-int receiveFileFromLinux(const char *outputFilename, PORT com_port) {
+int receiveFileFromLinux(PORT com_port) {
     FILE *file;
     char buffer[200];
     size_t bytes_read;
     int bytes_written;
-
-    // 打开文件
-    file = fopen(outputFilename, "wb");
-    if (file == NULL) {
-        printf("Failed to open file '%s'.\n", outputFilename);
-        return 1;
-    }
-
     // 读取文件名
     bytes_read = ReciveData(com_port, buffer, sizeof(buffer));
     if (bytes_read <= 0) {
         printf("Failed to receive filename.\n");
-        fclose(file);
         return 1;
     }
     buffer[bytes_read] = '\0'; // Add null terminator
-    printf("Received filename: %s\n", buffer);
+    printf("bytes_read=%d,Received filename: %s\n",bytes_read, buffer);
 
+    // 打开文件
+    file = fopen(buffer, "wb");
+    if (file == NULL) {
+        printf("Failed to open file '%s'.\n", buffer);
+        fclose(file);
+        return 1;
+    }
+    memset(buffer, 0, sizeof(buffer));
     // 读取文件大小
     bytes_read = ReciveData(com_port, buffer, sizeof(buffer));
+
     if (bytes_read <= 0) {
         printf("Failed to receive file size.\n");
         fclose(file);
@@ -96,7 +96,7 @@ int receiveFileFromLinux(const char *outputFilename, PORT com_port) {
     buffer[bytes_read] = '\0'; // Add null terminator
     long file_size = strtol(buffer, NULL, 10);
     printf("Received file size: %ld\n", file_size);
-
+    memset(buffer, 0, sizeof(buffer));
     // 接收文件内容并写入文件
     long bytes_received = 0;
     while (bytes_received < file_size) {
@@ -108,6 +108,7 @@ int receiveFileFromLinux(const char *outputFilename, PORT com_port) {
         }
         fwrite(buffer, 1, bytes_read, file);
         bytes_received += bytes_read;
+        memset(buffer, 0, sizeof(buffer));
     }
 
     // 关闭文件
@@ -144,7 +145,7 @@ int sendFileToLinux(const char *filename, PORT com_port) {
     fseek(file, 0, SEEK_SET);
 	long b_sent = 0;
     // 发送文件大小到 Linux 开发板
-    char size_buffer[20];
+    char size_buffer[32];
     snprintf(size_buffer, sizeof(size_buffer), "%ld", file_size);
     bytes_sent = SendData(com_port, size_buffer, strlen(size_buffer));
     if (bytes_sent <= 0) {

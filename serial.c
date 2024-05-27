@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <windows.h>
 #include "serial.h"
-
+HANDLE hComm;
 PORT OpenPort(int idx)
 {
-    HANDLE hComm;
+    //HANDLE hComm;
     TCHAR comname[100];
     wsprintf(comname, TEXT("\\\\.\\COM%d"), idx);
     hComm = CreateFile(comname,            //port name
@@ -18,9 +18,10 @@ PORT OpenPort(int idx)
     if (hComm == INVALID_HANDLE_VALUE)
         return NULL;
     COMMTIMEOUTS timeouts = { 0 };
-    timeouts.ReadIntervalTimeout = 50;
-    timeouts.ReadTotalTimeoutConstant = 50;
-    timeouts.ReadTotalTimeoutMultiplier = 10;
+    timeouts.ReadIntervalTimeout = 100;
+    timeouts.ReadTotalTimeoutConstant = 0;
+    timeouts.ReadTotalTimeoutMultiplier = 500;
+
     timeouts.WriteTotalTimeoutConstant = 50;
     timeouts.WriteTotalTimeoutMultiplier = 10;
 
@@ -139,6 +140,7 @@ int GetPortParity(PORT com_port)
 
 int SendData(PORT com_port, const char *data, size_t i)
 {
+    //PurgeComm(hComm, PURGE_TXABORT | PURGE_TXCLEAR);
     DWORD  dNoOFBytestoWrite = strlen(data);
     DWORD  dNoOfBytesWritten;
     BOOL Status = WriteFile(com_port,
@@ -160,9 +162,9 @@ int SendData(PORT com_port, const char *data, size_t i)
 
 int ReciveData(PORT com_port, char * data,int len)
 {
+    //PurgeComm(hComm, PURGE_TXABORT | PURGE_TXCLEAR);
     DWORD dwEventMask;
     DWORD NoBytesRead;
-
     BOOL Status = WaitCommEvent(com_port, &dwEventMask, NULL);
     if (Status == FALSE)
     {
@@ -170,7 +172,7 @@ int ReciveData(PORT com_port, char * data,int len)
     }
     Status = ReadFile(com_port, data, len, &NoBytesRead, NULL);
     data[NoBytesRead] = 0;
-
+    printf("Status=:%d\n",Status);
     if (Status == FALSE)
     {
         return FALSE;
@@ -180,7 +182,7 @@ int ReciveData(PORT com_port, char * data,int len)
         printf("%s\n",data);
     }
 
-    return TRUE;
+    return NoBytesRead;
 }
 
 PORT serial_init(int idx, int rate, int databits, int stopbits, int parity)

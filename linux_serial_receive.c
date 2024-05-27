@@ -55,7 +55,7 @@ int receiveFileFromPC(const char *serial_path) {
     int serial_port;
     FILE *file;
     char filename[256];
-    char size_buffer[20];
+    char size_buffer[32];
     char buffer[BUF_SIZE];
     ssize_t bytes_read;
     long file_size;
@@ -181,7 +181,7 @@ int sendFileToPC(const char *filename, const char *serial_path) {
         return 1;
     }
 
-    char size_buffer[20];
+    char size_buffer[32];
     snprintf(size_buffer, sizeof(size_buffer), "%ld", file_size);
     bytes_sent = write(serial_port, size_buffer, strlen(size_buffer));
     if (bytes_sent <= 0) {
