@@ -1,4 +1,4 @@
 /cmake-build-debug/
 /cmake-build-release/
-*.exe
-*.o
+/cmake-build-releaseremotehost/
+/cmake-build-debugremotehost/
