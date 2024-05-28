@@ -30,11 +30,9 @@ SerialTransfer 是一个用于在PC和开发板之间进行串口通信的程序
    
    `cd SerialTransfer`
 
-## 使用
+## 使用方法
 
 1. 编译代码：
-   
-   sh
    
    复制代码
    
@@ -46,9 +44,19 @@ SerialTransfer 是一个用于在PC和开发板之间进行串口通信的程序
    
    复制代码
    
-   `./main.exe send`
+   windows端的串口程序
    
-   ![dd0](https://s21.ax1x.com/2024/05/27/pk1Zncd.png)
+   发送用send 接收用receive
+   
+   ```shell
+   ./main.exe send
+   ```
+
+    3.   linux开发板串口send测试用例![send](https://img.picgo.net/2024/05/28/send751f45413c39179e.png)
+![receive](https://img.picgo.net/2024/05/28/receivea3142c39d2d69fdf.png)
+![num](https://img.picgo.net/2024/05/28/num6585f474450c004d.png)
+
+
 
 ## 文件结构
 
