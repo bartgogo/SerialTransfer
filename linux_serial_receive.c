@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
-#include <sys/select.h>
+#include <termios.h>
 
 #define BUF_SIZE 1024 // 缓冲区大小
 
@@ -50,6 +50,43 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
+// 设置串口属性
+int setSerialAttributes(int fd, int speed, int parity) {
+    struct termios tty;
+
+    if (tcgetattr(fd, &tty) != 0) {
+        perror("tcgetattr");
+        return -1;
+    }
+
+    cfsetospeed(&tty, speed);
+    cfsetispeed(&tty, speed);
+
+    tty.c_cflag = (tty.c_cflag & ~CSIZE) | CS8; // 8-bit chars
+    tty.c_iflag &= ~IGNBRK; // disable break processing
+    tty.c_lflag = 0; // no signaling chars, no echo,
+                     // no canonical processing
+    tty.c_oflag = 0; // no remapping, no delays
+    tty.c_cc[VMIN] = 1; // read blocks
+    tty.c_cc[VTIME] = 0; // no timeout
+
+    tty.c_iflag &= ~(IXON | IXOFF | IXANY); // shut off xon/xoff ctrl
+
+    tty.c_cflag |= (CLOCAL | CREAD); // ignore modem controls,
+                                     // enable reading
+    tty.c_cflag &= ~(PARENB | PARODD); // shut off parity
+    tty.c_cflag |= parity;
+    tty.c_cflag &= ~CSTOPB;
+    tty.c_cflag &= ~CRTSCTS;
+
+    if (tcsetattr(fd, TCSANOW, &tty) != 0) {
+        perror("tcsetattr");
+        return -1;
+    }
+
+    return 0;
+}
+
 // 函数定义：接收文件从 PC
 int receiveFileFromPC(const char *serial_path) {
     int serial_port;
@@ -60,46 +97,34 @@ int receiveFileFromPC(const char *serial_path) {
     ssize_t bytes_read;
     long file_size;
     long bytes_written = 0;
-    fd_set read_fds;
-    struct timeval timeout;
 
     // 打开串口
-    serial_port = open(serial_path, O_RDWR);
+    serial_port = open(serial_path, O_RDWR | O_NOCTTY | O_SYNC);
     if (serial_port < 0) {
         perror("Error opening serial port");
         return 1;
     }
 
-    // 使用 select 监视串口是否可读
-    FD_ZERO(&read_fds);
-    FD_SET(serial_port, &read_fds);
+    // 设置串口属性
+    if (setSerialAttributes(serial_port, B115200, 0) != 0) {
+        close(serial_port);
+        return 1;
+    }
 
     // 读取文件名
     memset(filename, 0, sizeof(filename));
-    if (select(serial_port + 1, &read_fds, NULL, NULL, NULL) > 0) {
-        bytes_read = read(serial_port, filename, sizeof(filename) - 1);
-        if (bytes_read <= 0) {
-            perror("Error reading filename");
-            close(serial_port);
-            return 1;
-        }
-    } else {
-        perror("Error or timeout waiting for filename");
+    bytes_read = read(serial_port, filename, sizeof(filename) - 1);
+    if (bytes_read <= 0) {
+        perror("Error reading filename");
         close(serial_port);
         return 1;
     }
 
     // 读取文件大小
     memset(size_buffer, 0, sizeof(size_buffer));
-    if (select(serial_port + 1, &read_fds, NULL, NULL, NULL) > 0) {
-        bytes_read = read(serial_port, size_buffer, sizeof(size_buffer) - 1);
-        if (bytes_read <= 0) {
-            perror("Error reading file size");
-            close(serial_port);
-            return 1;
-        }
-    } else {
-        perror("Error or timeout waiting for file size");
+    bytes_read = read(serial_port, size_buffer, sizeof(size_buffer) - 1);
+    if (bytes_read <= 0) {
+        perror("Error reading file size");
         close(serial_port);
         return 1;
     }
@@ -113,27 +138,17 @@ int receiveFileFromPC(const char *serial_path) {
         return 1;
     }
 
-    // 使用 select 监视串口是否可读，读取文件内容并写入文件
+    // 读取文件内容并写入文件
     while (bytes_written < file_size) {
-        FD_ZERO(&read_fds);
-        FD_SET(serial_port, &read_fds);
-
-        if (select(serial_port + 1, &read_fds, NULL, NULL, NULL) > 0) {
-            bytes_read = read(serial_port, buffer, sizeof(buffer));
-            if (bytes_read <= 0) {
-                perror("Error reading from serial port");
-                fclose(file);
-                close(serial_port);
-                return 1;
-            }
-            fwrite(buffer, 1, bytes_read, file);
-            bytes_written += bytes_read;
-        } else {
-            perror("Error or timeout waiting for file content");
+        bytes_read = read(serial_port, buffer, sizeof(buffer));
+        if (bytes_read <= 0) {
+            perror("Error reading from serial port");
             fclose(file);
             close(serial_port);
             return 1;
         }
+        fwrite(buffer, 1, bytes_read, file);
+        bytes_written += bytes_read;
     }
 
     // 关闭文件和串口
@@ -153,9 +168,15 @@ int sendFileToPC(const char *filename, const char *serial_path) {
     int bytes_sent;
 
     // 打开串口
-    serial_port = open(serial_path, O_RDWR|O_NOCTTY);
+    serial_port = open(serial_path, O_RDWR | O_NOCTTY | O_SYNC);
     if (serial_port < 0) {
         perror("Error opening serial port");
+        return 1;
+    }
+
+    // 设置串口属性
+    if (setSerialAttributes(serial_port, B115200, 0) != 0) {
+        close(serial_port);
         return 1;
     }
 
@@ -180,7 +201,7 @@ int sendFileToPC(const char *filename, const char *serial_path) {
         close(serial_port);
         return 1;
     }
-
+    sleep(1);
     char size_buffer[32];
     snprintf(size_buffer, sizeof(size_buffer), "%ld", file_size);
     bytes_sent = write(serial_port, size_buffer, strlen(size_buffer));
@@ -190,6 +211,7 @@ int sendFileToPC(const char *filename, const char *serial_path) {
         close(serial_port);
         return 1;
     }
+    sleep(1);
 
     // 发送文件内容到 PC
     while ((bytes_read = fread(buffer, 1, sizeof(buffer), file)) > 0) {
