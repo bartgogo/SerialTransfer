@@ -40,7 +40,7 @@ SerialTransfer 是一个高效的串行数据传输库，适用于C/C++ 项目,�
 1. 克隆仓库：
    
    ```sh
-   git clone https://github.com/yourusername/SerialTransfer.git
+   git clone https://github.com/bartgogo/SerialTransfer.git
    cd SerialTransfer
    ```
 
