@@ -58,7 +58,7 @@ int setSerialAttributes(int fd, int speed, int parity) {
         perror("tcgetattr");
         return -1;
     }
-
+    cfmakeraw(&tty);
     cfsetospeed(&tty, speed);
     cfsetispeed(&tty, speed);
 
