@@ -50,6 +50,7 @@ int SetPortBoudRate(PORT com_port, int rate)
     if (Status == FALSE)
         return FALSE;
     dcbSerialParams.BaudRate = rate;
+
     Status = SetCommState(com_port, &dcbSerialParams);
     return Status;
 }

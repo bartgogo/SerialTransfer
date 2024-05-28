@@ -3,4 +3,4 @@ main:main.o serial.o
 main.o: main.c
 	gcc -c main.c -o main.o
 serial.o:serial.c serial.h
-	gcc -c serial.h -o serial.o
+	gcc -c serial.c -o serial.o

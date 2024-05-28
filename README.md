@@ -7,7 +7,8 @@
 ## 项目简介
 
 SerialTransfer 是一个高效的串行数据传输库，适用于C/C++ 项目,并且横跨linux与windows平台。它提供简单且灵活的 API，使得串行通信变得轻松和高效。
-
+新增功能，linux_serial_receive.c支持二进制可执行文件的发送与传输
+windows平台程序尚未完成收发二进制程序，若想与linux开发板完成二进制收发则需要进入ubuntu虚拟机安装ch340驱动后，则可以进行可执行二进制程序的收发
 ## 目录
 
 - [功能](#功能)
@@ -23,7 +24,8 @@ SerialTransfer 是一个高效的串行数据传输库，适用于C/C++ 项目,�
 - 简单易用的 API
 - 支持多种平台（Linux,  Windows）
 - 可扩展和定制
-
+- [新增功能](#新增功能--linux平台程序支持二进制可执行文件传输)，linux_serial_receive.c支持二进制可执行文件的发送与传输
+- windows平台程序尚未完成收发二进制程序，若想与linux开发板完成二进制收发则需要进入ubuntu虚拟机安装ch340驱动后，则可以进行可执行二进制程序的收发
 ## 安装
 
 ### 前提条件
@@ -96,6 +98,8 @@ SerialTransfer 是一个高效的串行数据传输库，适用于C/C++ 项目,�
       ![receive](https://img.picgo.net/2024/05/28/receivea3142c39d2d69fdf.png)
       ![num](https://img.picgo.net/2024/05/28/num6585f474450c004d.png)
 
+   ##### 新增功能--linux平台程序支持二进制可执行文件传输
+   ![屏幕截图 2024 05 28 203127](https://img.picgo.net/2024/05/28/-2024-05-28-203127e283550bee115dba.png)
 #### 文件结构
 
 - `main.c`：主程序文件，包含程序的入口函数和逻辑控制。

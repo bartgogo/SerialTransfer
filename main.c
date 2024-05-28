@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
 // 函数定义：接收文件从 Linux 开发板
 int receiveFileFromLinux(PORT com_port) {
     FILE *file;
-    char buffer[200];
+    char buffer[1024];
     size_t bytes_read;
     int bytes_written;
     // 读取文件名
@@ -121,7 +121,7 @@ int receiveFileFromLinux(PORT com_port) {
 // 函数定义：发送文件到 Linux 开发板
 int sendFileToLinux(const char *filename, PORT com_port) {
     FILE *file;
-    char buffer[200];
+    char buffer[1024];
     size_t bytes_read;
     int bytes_sent;
 
