@@ -84,6 +84,7 @@ int receiveFileFromLinux(PORT com_port) {
         fclose(file);
         return 1;
     }
+	printf("创建文件完成");
     memset(buffer, 0, sizeof(buffer));
     // 读取文件大小
     bytes_read = ReciveData(com_port, buffer, sizeof(buffer));
@@ -120,7 +121,7 @@ int receiveFileFromLinux(PORT com_port) {
 // 函数定义：发送文件到 Linux 开发板
 int sendFileToLinux(const char *filename, PORT com_port) {
     FILE *file;
-    char buffer[100];
+    char buffer[200];
     size_t bytes_read;
     int bytes_sent;
 
@@ -138,6 +139,7 @@ int sendFileToLinux(const char *filename, PORT com_port) {
         fclose(file);
         return 1;
     }
+	Sleep(1000);
 	
     // 获取文件大小
     fseek(file, 0, SEEK_END);
@@ -153,7 +155,7 @@ int sendFileToLinux(const char *filename, PORT com_port) {
         fclose(file);
         return 1;
     }
-	Sleep(50);
+	Sleep(1000);
     // 发送文件内容到 Linux 开发板
 	while (!feof(file)){
 		memset(buffer, 0, sizeof(buffer));

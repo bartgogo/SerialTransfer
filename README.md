@@ -46,7 +46,9 @@ SerialTransfer 是一个用于在PC和开发板之间进行串口通信的程序
    
    复制代码
    
-   `./main.exe`
+   `./main.exe send`
+   
+   ![dd0](https://s21.ax1x.com/2024/05/27/pk1Zncd.png)
 
 ## 文件结构
 
