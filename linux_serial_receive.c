@@ -77,7 +77,7 @@ int setSerialAttributes(int fd, int speed, int parity) {
     tty.c_cflag |= parity;
     tty.c_cflag &= ~CSTOPB;
     tty.c_cflag &= ~CRTSCTS;
-
+   // tcflush(fd,TCIFLUSH);
     if (tcsetattr(fd, TCSANOW, &tty) != 0) {
         perror("tcsetattr");
         return -1;
