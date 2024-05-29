@@ -66,8 +66,8 @@ int setSerialAttributes(int fd, int speed, int parity) {
     tty.c_lflag = 0; // no signaling chars, no echo,
                      // no canonical processing
     tty.c_oflag = 0; // no remapping, no delays
-    tty.c_cc[VMIN] = 0; // non read blocks
-    tty.c_cc[VTIME] = 100; // no timeout
+    tty.c_cc[VMIN] = 1; // non read blocks
+    tty.c_cc[VTIME] = 0; // no timeout
 
     tty.c_iflag &= ~(IXON | IXOFF | IXANY); // shut off xon/xoff ctrl
 
@@ -112,7 +112,7 @@ int receiveFileFromPC(const char *serial_path) {
 
     // 读取文件名
     memset(filename, 0, sizeof(filename));
-    bytes_read = read(serial_port, filename, sizeof(filename) - 1);
+    bytes_read = read(serial_port, filename, sizeof(filename));
     printf("文件名为%s,读取字节为%d",filename,bytes_read);
     if (bytes_read <= 0) {
         perror("Error reading filename");
@@ -122,7 +122,7 @@ int receiveFileFromPC(const char *serial_path) {
 
     // 读取文件大小
     memset(size_buffer, 0, sizeof(size_buffer));
-    bytes_read = read(serial_port, size_buffer, sizeof(size_buffer) - 1);
+    bytes_read = read(serial_port, size_buffer, sizeof(size_buffer));
     if (bytes_read <= 0) {
         perror("Error reading file size");
         close(serial_port);
