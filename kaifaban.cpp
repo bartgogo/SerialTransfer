@@ -126,8 +126,13 @@ int receiveFileFromPC(const char *serial_path) {
     while(1)
     {
     read(serial_port,&a,1);
+    a=0;
     if(a=='a')
-        break;
+    {
+    printf("已经准备接收\n");
+    break;
+    }
+
     }
 
     bytes_read = read(serial_port, filename, sizeof(filename));
