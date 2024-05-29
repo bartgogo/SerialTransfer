@@ -66,8 +66,8 @@ int setSerialAttributes(int fd, int speed, int parity) {
     tty.c_lflag = 0; // no signaling chars, no echo,
                      // no canonical processing
     tty.c_oflag = 0; // no remapping, no delays
-    tty.c_cc[VMIN] = 1; // read blocks
-    tty.c_cc[VTIME] = 0; // no timeout
+    tty.c_cc[VMIN] = 0; // non read blocks
+    tty.c_cc[VTIME] = 100; // no timeout
 
     tty.c_iflag &= ~(IXON | IXOFF | IXANY); // shut off xon/xoff ctrl
 
