@@ -1,12 +1,3 @@
-/**
-  ******************************************************************************
-  * @file           : kaifaban.cpp
-  * @author         : JackZhao
-  * @brief          : None
-  * @attention      : None
-  * @date           : 2024/5/29
-  ******************************************************************************
-  */
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -99,7 +90,7 @@ int setSerialAttributes(int fd, int speed, int parity) {
 int receiveFileFromPC(const char *serial_path) {
     int serial_port;
     FILE *file;
-    char filename[256];
+    char filename[128];
     char size_buffer[32];
     char buffer[BUF_SIZE];
     ssize_t bytes_read;
@@ -133,7 +124,6 @@ int receiveFileFromPC(const char *serial_path) {
     }
     a=0;
     }
-    usleep(1000);
     bytes_read = read(serial_port, filename, sizeof(filename));
     printf("文件名为%s,读取字节为%d",filename,bytes_read);
     if (bytes_read <= 0) {
