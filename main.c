@@ -140,7 +140,7 @@ int sendFileToLinux(const char *filename, PORT com_port) {
         fclose(file);
         return 1;
     }
-	Sleep(1000);
+	Sleep(2000);
 	
     // 获取文件大小
     fseek(file, 0, SEEK_END);
@@ -156,7 +156,7 @@ int sendFileToLinux(const char *filename, PORT com_port) {
         fclose(file);
         return 1;
     }
-	Sleep(1000);
+	Sleep(2000);
     // 发送文件内容到 Linux 开发板
 	while (!feof(file)){
 		memset(buffer, 0, sizeof(buffer));

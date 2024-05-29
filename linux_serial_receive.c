@@ -58,7 +58,6 @@ int setSerialAttributes(int fd, int speed, int parity) {
         perror("tcgetattr");
         return -1;
     }
-    cfmakeraw(&tty);
     cfsetospeed(&tty, speed);
     cfsetispeed(&tty, speed);
 
@@ -130,7 +129,7 @@ int receiveFileFromPC(const char *serial_path) {
         return 1;
     }
     file_size = strtol(size_buffer, NULL, 10);
-
+    printf("文件大小%d",file_size);
     // 打开文件
     file = fopen(filename, "wb");
     if (file == NULL) {
@@ -151,7 +150,7 @@ int receiveFileFromPC(const char *serial_path) {
         fwrite(buffer, 1, bytes_read, file);
         bytes_written += bytes_read;
     }
-
+    printf("总共收入字节:%d",bytes_written);
     // 关闭文件和串口
     fclose(file);
     close(serial_port);
