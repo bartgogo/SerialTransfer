@@ -139,7 +139,6 @@ int sendFileToLinux(const char *filename, PORT com_port) {
         Sleep(3);
     }
     SendData(com_port,&b,1);
-    Sleep(1000);
     // 发送文件名到 Linux 开发板
     bytes_sent = SendData(com_port, filename, strlen(filename));
     if (bytes_sent <= 0) {
