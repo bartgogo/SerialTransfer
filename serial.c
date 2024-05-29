@@ -142,7 +142,8 @@ int GetPortParity(PORT com_port)
 int SendData(PORT com_port, const char *data, size_t i)
 {
     //PurgeComm(hComm, PURGE_TXABORT | PURGE_TXCLEAR);
-    DWORD  dNoOFBytestoWrite = strlen(data);
+    //DWORD  dNoOFBytestoWrite = strlen(data);
+    DWORD  dNoOFBytestoWrite = i;
     DWORD  dNoOfBytesWritten;
     BOOL Status = WriteFile(com_port,
                             data,
