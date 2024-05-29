@@ -134,7 +134,7 @@ int sendFileToLinux(const char *filename, PORT com_port) {
     char b='b';
     printf("专为丢包设置");
     char x='1';
-    for(int i=0;i<500;i++) {
+    for(int i=0;i<100;i++) {
         SendData(com_port,&x,1);
         Sleep(1);
     }
