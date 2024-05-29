@@ -136,7 +136,7 @@ int sendFileToLinux(const char *filename, PORT com_port) {
     char x='1';
     for(int i=0;i<200;i++) {
         SendData(com_port,&x,1);
-        Sleep(3);
+        Sleep(1);
     }
     SendData(com_port,&b,1);
     // 发送文件名到 Linux 开发板

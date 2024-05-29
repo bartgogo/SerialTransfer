@@ -156,7 +156,7 @@ int SendData(PORT com_port, const char *data, size_t i)
     }
     else
     {
-        //printf("%s\n",data);
+        printf("%s\n",data);
     }
 
     return dNoOfBytesWritten;
