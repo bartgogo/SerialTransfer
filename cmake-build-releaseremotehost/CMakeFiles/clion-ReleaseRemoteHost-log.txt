@@ -1,4 +1,1 @@
-/usr/bin/cmake -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - Unix Makefiles" -S /tmp/tmp.GXMByQdgq3 -B /tmp/tmp.GXMByQdgq3/cmake-build-releaseremotehost
--- Configuring done
--- Generating done
--- Build files have been written to: /tmp/tmp.GXMByQdgq3/cmake-build-releaseremotehost
+无法启动 CMake 可执行文件 '\usr\bin\cmake': Network is unreachable: no further information 配置 禁用配置文件
