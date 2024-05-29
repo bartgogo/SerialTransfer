@@ -135,6 +135,7 @@ int sendFileToLinux(const char *filename, PORT com_port) {
     char x=1;
     for(int i=0;i<100;i++) {
         SendData(com_port,&x,1);
+        Sleep(1);
     }
     SendData(com_port,&a,1);
     Sleep(1000);
