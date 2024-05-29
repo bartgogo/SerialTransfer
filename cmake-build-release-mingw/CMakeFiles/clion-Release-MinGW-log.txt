@@ -7,6 +7,6 @@ CMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):
   CMake that the project does not need compatibility with older versions.
 
 
--- Configuring done (0.5s)
+-- Configuring done (0.4s)
 -- Generating done (0.0s)
 -- Build files have been written to: C:/Users/15437/Desktop/SerialTransfer/cmake-build-release-mingw

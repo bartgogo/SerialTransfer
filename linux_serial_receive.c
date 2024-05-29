@@ -114,6 +114,7 @@ int receiveFileFromPC(const char *serial_path) {
     // 读取文件名
     memset(filename, 0, sizeof(filename));
     bytes_read = read(serial_port, filename, sizeof(filename) - 1);
+    printf("文件名为%s,读取字节为%d",filename,bytes_read);
     if (bytes_read <= 0) {
         perror("Error reading filename");
         close(serial_port);

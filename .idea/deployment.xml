@@ -25,12 +25,14 @@
             <mapping deploy="/tmp/tmp.GXMByQdgq3" local="$PROJECT_DIR$" />
           </mappings>
           <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-mingw" />
             <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debugremotehost" />
             <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-releaseremotehost" />
             <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
             <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-release" />
             <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debugremotehost" />
             <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-mingw" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-release-mingw" />
             <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-release-mingw" />
             <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-releaseremotehost" />
           </excludedPaths>
