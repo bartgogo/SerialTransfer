@@ -10,7 +10,7 @@ int main() {
     int fd;
     struct termios serial;
 
-    fd = open("/dev/ttySAC2", O_RDWR | O_NOCTTY | O_NDELAY);
+    fd = open("/dev/ttySAC2", O_RDWR | O_NOCTTY);
     if (fd == -1) {
         perror("open");
         return 1;
@@ -22,7 +22,7 @@ int main() {
     serial.c_cflag = CS8 | CREAD | CLOCAL;
     serial.c_lflag = 0;
     serial.c_cc[VMIN] = 1;
-    serial.c_cc[VTIME] = 5;
+    serial.c_cc[VTIME] = 0;
 
     cfsetospeed(&serial, B115200);
     cfsetispeed(&serial, B115200);
@@ -33,13 +33,9 @@ int main() {
     }
 
     while (1) {
-        char buf[256];
-        ssize_t len = read(fd, buf, sizeof(buf)-1);
-        if (len > 0) {
-            buf[len] = '\0';
-            printf("Received: %s", buf);
-        }
-        usleep(100000);  // Sleep for 100ms
+        char buf[1];
+        ssize_t len = read(fd, buf, sizeof(buf));
+        printf("Received: %s", buf);// Sleep for 100ms
     }
 
     close(fd);
