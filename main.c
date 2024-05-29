@@ -124,15 +124,19 @@ int sendFileToLinux(const char *filename, PORT com_port) {
     char buffer[1024];
     size_t bytes_read;
     int bytes_sent;
-
+    char a='a';
     // 打开文件
     file = fopen(filename, "rb");
     if (file == NULL) {
         printf("Failed to open file '%s'.\n", filename);
         return 1;
     }
-
-
+    printf("专为丢包设置");
+    char x=0x01;
+    for(int i=0;i<100;i++) {
+        SendData(com_port,&x,1);
+    }
+    SendData(com_port,&a,1);
     // 发送文件名到 Linux 开发板
     bytes_sent = SendData(com_port, filename, strlen(filename));
     if (bytes_sent <= 0) {
