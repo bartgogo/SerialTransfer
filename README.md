@@ -22,10 +22,15 @@ windows平台程序尚未完成收发二进制程序，若想与linux开发板�
 ## 功能
 
 - 高效的串行数据传输
+
 - 简单易用的 API
+
 - 支持多种平台（Linux,  Windows）
+
 - 可扩展和定制
+
 - [新增功能](#新增功能--linux平台程序支持二进制可执行文件传输)，linux_serial_receive.c支持二进制可执行文件的发送与传输
+
 - windows平台程序尚未完成收发二进制程序，若想与linux开发板完成二进制收发则需要进入ubuntu虚拟机安装ch340驱动后，则可以进行可执行二进制程序的收发
   
   ## 安装
@@ -73,8 +78,6 @@ windows平台程序尚未完成收发二进制程序，若想与linux开发板�
 
 2. 运行可执行文件：
    
-   sh
-   
    复制代码
    
    windows端的串口程序
@@ -86,7 +89,13 @@ windows平台程序尚未完成收发二进制程序，若想与linux开发板�
    #然后填写串口名和文件名即可发送
    ```
    
-   ![send_tu](https://img.picgo.net/2024/05/28/-2024-05-28-1830149e3ff862df4d0191.png)3.linux开发板串口send测试用例 以num.c为发送文件示例
+   ![send_tu](https://img.picgo.net/2024/05/28/-2024-05-28-1830149e3ff862df4d0191.png)
+   
+   
+   
+   
+   
+   3.linux开发板串口send测试用例 以num.c为发送文件示例
    
    ```cpp
    ./serial send /dev/pts/3
