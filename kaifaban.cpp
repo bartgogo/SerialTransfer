@@ -86,7 +86,7 @@ int setSerialAttributes(int fd, int speed, int parity) {
     tty.c_cflag |= parity;
     tty.c_cflag &= ~CSTOPB;
     tty.c_cflag &= ~CRTSCTS;
-   // tcflush(fd,TCIFLUSH);
+    tcflush(fd,TCIFLUSH);
     if (tcsetattr(fd, TCSANOW, &tty) != 0) {
         perror("tcsetattr");
         return -1;
@@ -122,7 +122,7 @@ int receiveFileFromPC(const char *serial_path) {
 
     // 读取文件名
     memset(filename, 0, sizeof(filename));
-    char a;
+    char a=0;
     while(1)
     {
     read(serial_port,&a,1);
@@ -133,7 +133,7 @@ int receiveFileFromPC(const char *serial_path) {
     }
     a=0;
     }
-
+    usleep(1000);
     bytes_read = read(serial_port, filename, sizeof(filename));
     printf("文件名为%s,读取字节为%d",filename,bytes_read);
     if (bytes_read <= 0) {
