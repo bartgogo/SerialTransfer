@@ -126,7 +126,7 @@ int receiveFileFromPC(const char *serial_path) {
     while(1)
     {
     read(serial_port,&a,1);
-    if(a=='a')
+    if(a=='b')
     {
     printf("已经准备接收\n");
     break;

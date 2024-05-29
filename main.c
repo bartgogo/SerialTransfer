@@ -124,7 +124,7 @@ int sendFileToLinux(const char *filename, PORT com_port) {
     char buffer[1024];
     size_t bytes_read;
     int bytes_sent;
-    char a='a';
+    char a='b';
     // 打开文件
     file = fopen(filename, "rb");
     if (file == NULL) {
